@@ -16,6 +16,9 @@ function Model(props) {
   const texture = useTexture(props.item.img);
 
     useEffect(() => {
+      const baseColor = props.item?.color?.[0];
+      if (!baseColor) return;
+
       Object.entries(materials).map((material) => {
         // these are the material names that can't be changed color
         if (
@@ -25,7 +28,7 @@ function Model(props) {
           material[0] !== "jlzuBkUzuJqgiAK" &&
           material[0] !== "xNrofRCqOXXHVZt"
         ) {
-          material[1].color = new THREE.Color(props.item.color[0]);
+          material[1].color = new THREE.Color(baseColor);
         }
         material[1].needsUpdate = true;
       });

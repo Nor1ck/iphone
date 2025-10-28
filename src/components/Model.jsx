@@ -1,56 +1,112 @@
-import { useGSAP } from "@gsap/react"
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import ModelView from "./ModelView";
-import { useEffect, useRef, useState } from "react";
-import { yellowImg } from "../utils";
-
-import * as THREE from 'three';
+import { createRef, useEffect, useMemo, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { View } from "@react-three/drei";
-import { models, sizes } from "../constants";
-import { animateWithGsapTimeline } from "../utils/animations";
+import { sizes } from "../constants";
+
+const DEFAULT_TITLE = "iPhone 15 Pro in Natural Titanium";
 
 const Model = () => {
-  const [size, setSize] = useState('small');
-  const [model, setModel] = useState({
-    title: 'iPhone 15 Pro in Natural Titanium',
-    color: ['#8F8A81', '#FFE7B9', '#6F6C64'],
-    img: yellowImg,
-  })
+  const sizeKeys = useMemo(() => sizes.map((size) => size.value), []);
+  const defaultSize = sizeKeys[0] || "mini";
 
-  // camera control for the model view
-  const cameraControlSmall = useRef();
-  const cameraControlLarge = useRef();
+  const [activeSize, setActiveSize] = useState(defaultSize);
+  const [previousSize, setPreviousSize] = useState(null);
 
-  // model
-  const small = useRef(new THREE.Group());
-  const large = useRef(new THREE.Group());
+  const groupRefs = useMemo(
+    () => sizeKeys.map(() => createRef()),
+    [sizeKeys]
+  );
 
-  // rotation
-  const [smallRotation, setSmallRotation] = useState(0);
-  const [largeRotation, setLargeRotation] = useState(0);
+  const controlRefs = useMemo(
+    () => sizeKeys.map(() => createRef()),
+    [sizeKeys]
+  );
 
-  const tl = gsap.timeline();
+  const rotationStatesRef = useRef(sizeKeys.map(() => 0));
+
+  const timelineRef = useRef(
+    gsap.timeline({ defaults: { ease: "power2.inOut", duration: 1.2 } })
+  );
+  const initialisedRef = useRef(false);
 
   useEffect(() => {
-    if(size === 'large') {
-      animateWithGsapTimeline(tl, small, smallRotation, '#view1', '#view2', {
-        transform: 'translateX(-100%)',
-        duration: 2
-      })
-    }
+    if (initialisedRef.current) return;
+    sizeKeys.forEach((value) => {
+      if (value !== activeSize) {
+        gsap.set(`#view-${value}`, { xPercent: 100 });
+      }
+    });
+    initialisedRef.current = true;
+  }, [activeSize, sizeKeys]);
 
-    if(size ==='small') {
-      animateWithGsapTimeline(tl, large, largeRotation, '#view2', '#view1', {
-        transform: 'translateX(0)',
-        duration: 2
+  useEffect(() => {
+    if (!previousSize || previousSize === activeSize) return;
+
+    const timeline = timelineRef.current;
+    timeline.clear();
+
+    const previousIndex = sizeKeys.indexOf(previousSize);
+    const activeIndex = sizeKeys.indexOf(activeSize);
+
+    const outgoingRef = groupRefs[previousIndex]?.current;
+    const incomingRef = groupRefs[activeIndex]?.current;
+    const rotationStates = rotationStatesRef.current;
+
+    if (!outgoingRef || !incomingRef) return;
+
+    timeline
+      .to(outgoingRef.rotation, {
+        y: rotationStates[previousIndex],
+        duration: 0.5,
       })
-    }
-  }, [size])
+      .to(
+        `#view-${previousSize}`,
+        {
+          xPercent: -100,
+          duration: 0.5,
+        },
+        "<"
+      )
+      .set(`#view-${activeSize}`, { xPercent: 100 })
+      .to(
+        incomingRef.rotation,
+        {
+          y: rotationStates[activeIndex],
+          duration: 1,
+        },
+        "<"
+      )
+      .to(
+        `#view-${activeSize}`,
+        {
+          xPercent: 0,
+          duration: 0.5,
+        },
+        "<"
+      );
+  }, [activeSize, previousSize]);
 
   useGSAP(() => {
-    gsap.to('#heading', { y: 0, opacity: 1 })
+    gsap.to("#heading", { y: 0, opacity: 1 });
   }, []);
+
+  const updateRotationState = (sizeValue, angle) => {
+    const sizeIndex = sizeKeys.indexOf(sizeValue);
+    if (sizeIndex === -1) return;
+    rotationStatesRef.current[sizeIndex] = angle;
+  };
+
+  const handleSizeSelect = (value) => {
+    if (value === activeSize) return;
+    setPreviousSize(activeSize);
+    setActiveSize(value);
+  };
+
+  const activeSizeData =
+    sizes.find((size) => size.value === activeSize) ?? sizes[0];
 
   return (
     <section className="common-padding">
@@ -61,56 +117,71 @@ const Model = () => {
 
         <div className="flex flex-col items-center mt-5">
           <div className="w-full h-[75vh] md:h-[90vh] overflow-hidden relative">
-            <ModelView 
-              index={1}
-              groupRef={small}
-              gsapType="view1"
-              controlRef={cameraControlSmall}
-              setRotationState={setSmallRotation}
-              item={model}
-              size={size}
-            />  
+            {sizeKeys.map((value, index) => {
+              const sizeData = sizes[index];
+              if (!sizeData?.bg) {
+                throw new Error(
+                  `Missing background image for size "${value}". Please define "bg" in sizes.`
+                );
+              }
 
-            <ModelView 
-              index={2}
-              groupRef={large}
-              gsapType="view2"
-              controlRef={cameraControlLarge}
-              setRotationState={setLargeRotation}
-              item={model}
-              size={size}
-            />
+              const item = {
+                title: sizeData.title ?? DEFAULT_TITLE,
+                img: sizeData.bg,
+              };
+
+              return (
+                <ModelView
+                  key={value}
+                  gsapId={`view-${value}`}
+                  groupRef={groupRefs[index]}
+                  controlRef={controlRefs[index]}
+                  setRotationState={(angle) => updateRotationState(value, angle)}
+                  item={item}
+                  size={value}
+                />
+              );
+            })}
 
             <Canvas
               className="w-full h-full"
               style={{
-                position: 'fixed',
+                position: "fixed",
                 top: 0,
                 bottom: 0,
                 left: 0,
                 right: 0,
-                overflow: 'hidden'
+                overflow: "hidden",
               }}
-              eventSource={document.getElementById('root')}
+              eventSource={document.getElementById("root")}
             >
               <View.Port />
             </Canvas>
           </div>
 
           <div className="mx-auto w-full">
-            <p className="text-sm font-light text-center mb-5">{model.title}</p>
+            <p className="text-sm font-light text-center mb-5">
+              {activeSizeData?.title ?? DEFAULT_TITLE}
+            </p>
 
             <div className="flex-center">
-              <ul className="color-container">
-                {models.map((item, i) => (
-                  <li key={i} className="w-6 h-6 rounded-full mx-2 cursor-pointer" style={{ backgroundColor: item.color[0] }} onClick={() => setModel(item)} />
-                ))}
-              </ul>
-
               <button className="size-btn-container">
-                {sizes.map(({ label, value }) => (
-                  <span key={label} className="size-btn" style={{ backgroundColor: size === value ? 'white' : 'transparent', color: size === value ? 'black' : 'white'}} onClick={() => setSize(value)}>
-                    {label}
+                {sizes.map(({ icon, value }) => (
+                  <span
+                    key={value}
+                    className="size-btn"
+                    style={{
+                      backgroundColor:
+                        activeSize === value ? "white" : "transparent",
+                      color: activeSize === value ? "black" : "white",
+                    }}
+                    onClick={() => handleSizeSelect(value)}
+                  >
+                    <img
+                      src={icon}
+                      alt={`${value} icon`}
+                      className="h-8 w-8 object-contain"
+                    />
                   </span>
                 ))}
               </button>
@@ -119,7 +190,7 @@ const Model = () => {
         </div>
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default Model
+export default Model;

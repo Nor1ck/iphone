@@ -1,12 +1,16 @@
 import {
-  blackImg,
-  blueImg,
+  appleImg,
+  bagImg,
+  bg1Img,
+  bg2Img,
+  bg3Img,
+  bg4Img,
   highlightFirstVideo,
   highlightFourthVideo,
   highlightSecondVideo,
   highlightThirdVideo,
-  whiteImg,
-  yellowImg,
+  searchImg,
+  watchImg,
 } from "../utils";
 
 export const navLists = ["Store", "Mac", "iPhone", "Support"];
@@ -16,11 +20,11 @@ export const hightlightsSlides = [
     id: 1,
     textLists: [
       "Enter A17 Pro.",
-      "Game‑changing chip.",
+      "Game-changing chip.",
       "Groundbreaking performance.",
     ],
     video: highlightFirstVideo,
-    videoDuration: 4,
+    videoDuration: 5,
   },
   {
     id: 2,
@@ -36,46 +40,45 @@ export const hightlightsSlides = [
       "iPhone ever. Far out.",
     ],
     video: highlightThirdVideo,
-    videoDuration: 2,
+    videoDuration: 5,
   },
   {
     id: 4,
-    textLists: ["All-new Action button.", "What will yours do?."],
+    textLists: ["All-new Action button.", "What will yours do?"],
     video: highlightFourthVideo,
-    videoDuration: 3.63,
-  },
-];
-
-export const models = [
-  {
-    id: 1,
-    title: "iPhone 15 Pro in Natural Titanium",
-    color: ["#8F8A81", "#ffe7b9", "#6f6c64"],
-    img: yellowImg,
-  },
-  {
-    id: 2,
-    title: "iPhone 15 Pro in Blue Titanium",
-    color: ["#53596E", "#6395ff", "#21242e"],
-    img: blueImg,
-  },
-  {
-    id: 3,
-    title: "iPhone 15 Pro in White Titanium",
-    color: ["#C9C8C2", "#ffffff", "#C9C8C2"],
-    img: whiteImg,
-  },
-  {
-    id: 4,
-    title: "iPhone 15 Pro in Black Titanium",
-    color: ["#454749", "#3b3b3b", "#181819"],
-    img: blackImg,
+    videoDuration: 5,
   },
 ];
 
 export const sizes = [
-  { label: '6.1"', value: "small" },
-  { label: '6.7"', value: "large" },
+  {
+    label: '5.4"',
+    value: "mini",
+    icon: appleImg,
+    title: "iPhone 15 Pro - Mini showcase",
+    bg: bg1Img,
+  },
+  {
+    label: '6.1"',
+    value: "standard",
+    icon: bagImg,
+    title: "iPhone 15 Pro - Standard view",
+    bg: bg2Img,
+  },
+  {
+    label: '6.7"',
+    value: "plus",
+    icon: searchImg,
+    title: "iPhone 15 Pro - Plus layout",
+    bg: bg3Img,
+  },
+  {
+    label: '7.0"',
+    value: "max",
+    icon: watchImg,
+    title: "iPhone 15 Pro - Max experience",
+    bg: bg4Img,
+  },
 ];
 
 export const footerLinks = [

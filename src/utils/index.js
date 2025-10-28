@@ -20,14 +20,15 @@ import replay from "/assets/images/replay.svg";
 import play from "/assets/images/play.svg";
 import pause from "/assets/images/pause.svg";
 
-import yellow from "/assets/images/yellow.jpg";
-import blue from "/assets/images/blue.jpg";
-import white from "/assets/images/white.jpg";
-import black from "/assets/images/black.jpg";
+
 import explore1 from "/assets/images/explore1.jpg";
 import explore2 from "/assets/images/explore2.jpg";
 import chip from "/assets/images/chip.jpeg";
 import frame from "/assets/images/frame.png";
+import bg1 from "/assets/images/bg1.jpg";
+import bg2 from "/assets/images/bg2.jpg";
+import bg3 from "/assets/images/bg3.jpg";
+import bg4 from "/assets/images/bg4.jpg";
 
 export const heroVideo = hmv;
 export const smallHeroVideo = smallmv;
@@ -47,11 +48,12 @@ export const replayImg = replay;
 export const playImg = play;
 export const pauseImg = pause;
 
-export const yellowImg = yellow;
-export const blueImg = blue;
-export const whiteImg = white;
-export const blackImg = black;
+
 export const explore1Img = explore1;
 export const explore2Img = explore2;
 export const chipImg = chip;
 export const frameImg = frame;
+export const bg1Img = bg1;
+export const bg2Img = bg2;
+export const bg3Img = bg3;
+export const bg4Img = bg4;
