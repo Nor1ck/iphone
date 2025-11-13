@@ -112,7 +112,7 @@ const Model = () => {
     <section className="common-padding">
       <div className="screen-max-width">
         <h1 id="heading" className="section-heading">
-          Take a closer look.
+          Vollständig Responsive
         </h1>
 
         <div className="flex flex-col items-center mt-5">
@@ -160,7 +160,7 @@ const Model = () => {
           </div>
 
           <div className="mx-auto w-full">
-            <p className="text-sm font-light text-center mb-5">
+            <p className="text-s font-light text-center mb-5">
               {activeSizeData?.title ?? DEFAULT_TITLE}
             </p>
 
@@ -172,7 +172,7 @@ const Model = () => {
                     className="size-btn"
                     style={{
                       backgroundColor:
-                        activeSize === value ? "white" : "transparent",
+                        activeSize === value ? "#04165e" : "transparent",
                       color: activeSize === value ? "black" : "white",
                     }}
                     onClick={() => handleSizeSelect(value)}
@@ -180,7 +180,7 @@ const Model = () => {
                     <img
                       src={icon}
                       alt={`${value} icon`}
-                      className="h-8 w-8 object-contain"
+                      className="h-10 w-10 object-contain"
                     />
                   </span>
                 ))}

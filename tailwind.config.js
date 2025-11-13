@@ -1,3 +1,5 @@
+import textShadowPlugin from "tailwindcss-textshadow";
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -7,7 +9,13 @@ export default {
         sans: ["Raleway", "ui-sans-serif", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
       },
       colors: {
-        blue: "#2997FF",
+        blue: {
+          DEFAULT: "#3C5DE1",
+          100: "#889ef8",
+          200: "#2643b8",
+          300: "#0021a7",
+          700: "#04165e",
+        },
         gray: {
           DEFAULT: "#86868b",
           100: "#94928d",
@@ -29,9 +37,15 @@ export default {
         },
       },
       animation: {
-        shine: "shine 4.8s ease-in-out infinite",
+        shine: "shine 3s ease-in-out infinite",
       },
+      minHeight: {
+        'screen-svh': '100svh',
+      },
+      textShadow: {
+        strong: "0 2px 3px rgba(0,0,0,0.7)",
+      }
     },
   },
-  plugins: [],
+  plugins: [textShadowPlugin],
 };

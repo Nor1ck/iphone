@@ -1,7 +1,9 @@
 import { useGSAP } from '@gsap/react'
 import React, { useRef } from 'react'
 import { animateWithGsap } from '../utils/animations';
-import { explore1Img, explore2Img, exploreVideo } from '../utils';
+import { explore1Img, explore2Img, exploreVideo, 
+  highlightFirstVideo, highlightSecondVideo, 
+  highlightThirdVideo, highlightFourthVideo } from '../utils';
 import gsap from 'gsap';
 
 const Features = () => {
@@ -35,19 +37,15 @@ const Features = () => {
     <section className="h-full common-padding bg-zinc relative overflow-hidden">
       <div className="screen-max-wdith">
         <div className="mb-12 w-full">
-          <h1 id="features_title" className="section-heading">Explore the full story.</h1>
+          <h1 id="features_title" className="section-heading">Alles aus einer Hand</h1>
         </div>
         
         <div className="flex flex-col justify-center items-center overflow-hidden">
-          <div className="mt-32 mb-24 pl-24">
-            <h2 className="text-5xl lg:text-7xl font-semibold">iPhone.</h2>
-            <h2 className="text-5xl lg:text-7xl font-semibold">Forged in titanium.</h2>
-          </div>
 
           <div className="flex-center flex-col sm:px-10">
-            <div className="relative h-[50vh] w-full flex items-center">
-              <video playsInline id="exploreVideo" className="w-full h-full object-cover object-center" preload="none" muted autoPlay ref={videoRef}>
-                <source src={exploreVideo} type="video/mp4" />
+            <div className="relative h-[50vh] w-full flex items-top">
+              <video playsInline loop id="exploreVideo" className="w-full h-full object-cover object-center" preload="none" muted autoPlay ref={videoRef}>
+                <source src={highlightSecondVideo} type="video/mp4" />
               </video>
             </div>
 
@@ -64,25 +62,26 @@ const Features = () => {
               <div className="feature-text-container">
                 <div className="flex-1 flex-center">
                   <p className="feature-text g_text">
-                    iPhone 15 Pro is {' '}
+                    Bei uns kriegst du alles, was du für deine Website brauchst. Wir haben {' '}
                     <span className="text-white">
-                      the first iPhone to feature an aerospace-grade titanium design
+                      professionelle Designer, Entwickler und Contentmanager
                     </span>,
-                    using the same alloy that spacecrafts use for missions to Mars.
+                     die deine Website so bauen, dass sie nicht nur gut aussieht, sondern auch konvertiert.
                   </p>
                 </div>
 
                 <div className="flex-1 flex-center">
                   <p className="feature-text g_text">
-                    Titanium has one of the best strength-to-weight ratios of any metal, making these our {' '}
+                    Mach dir keine Sorgen über lange Kommunikationswege {' '}
                     <span className="text-white">
-                      lightest Pro models ever.
+                       du hast einen festen Ansprechpartner
                     </span>
-                    You'll notice the difference the moment you pick one up.
+                    , der unser Team aus Experten koordiniert, sodass deine Website pünktlich und in höchster Qualität fertiggestellt wird.
                   </p>
                 </div>
-
-
+              </div>
+              <div className="flex-center mt-16">
+                <a href="#highlights" className="btn">Jetzt Strategiesession anfragen</a>
               </div>
             </div>
           </div>

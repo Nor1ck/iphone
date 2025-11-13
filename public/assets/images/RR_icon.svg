@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="uuid-f6d1cddf-2c51-48f2-bfc6-5253bf1a1d53" data-name="Ebene 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <style>
+      .uuid-3084e502-bc0c-4b1d-8453-cd3425a3ea27 {
+        fill: #fff;
+      }
+
+      .uuid-c0a4d0df-d6b3-4d94-a9d5-245f070332b5 {
+        fill: #9c9b9b;
+      }
+
+      .uuid-afd90a29-7c4e-4915-8fdf-73a62b80bfc8 {
+        fill: #c6c6c6;
+      }
+    </style>
+  </defs>
+  <path class="uuid-3084e502-bc0c-4b1d-8453-cd3425a3ea27" d="M7.62,6.25L0,25.75h4.27L11.89,6.25"/>
+  <path class="uuid-afd90a29-7c4e-4915-8fdf-73a62b80bfc8" d="M11.86,6.25l-7.62,19.5h4.38l7.62-19.5"/>
+  <path class="uuid-3084e502-bc0c-4b1d-8453-cd3425a3ea27" d="M28.12,12.51c0-3.61-2.07-6.26-6.85-6.26h-5.04l-1.1,2.8h6.17c2.79,0,3.76,1.46,3.76,3.46s-.95,3.46-3.76,3.46h-4.48l-1.1,2.81h4.87l4.62,6.97h3.61l-5.13-7.24c3.05-.78,4.42-3.07,4.42-6h0Z"/>
+  <path class="uuid-c0a4d0df-d6b3-4d94-a9d5-245f070332b5" d="M26.87,18.51c3.05-.78,4.42-3.07,4.42-6h0c0-3.62-2.07-6.26-6.85-6.26h-3.17c4.77,0,6.85,2.65,6.85,6.26h0c0,2.93-1.36,5.23-4.42,6l5.13,7.24h3.18l-5.13-7.24Z"/>
+  <polygon class="uuid-c0a4d0df-d6b3-4d94-a9d5-245f070332b5" points="15.14 9.05 8.61 25.75 12.99 25.75 19.51 9.05 15.14 9.05"/>
+</svg>

@@ -26,16 +26,16 @@ const VideoCarousel = () => {
 
   useGSAP(() => {
     // slider animation to move the video out of the screen and bring the next video in
-    gsap.to("#slider", {
+    gsap.to(".carousel-slider", {
       transform: `translateX(${-100 * videoId}%)`,
       duration: 2,
       ease: "power2.inOut", // show visualizer https://gsap.com/docs/v3/Eases
     });
 
     // video animation to play the video when it is in the view
-    gsap.to("#video", {
+    gsap.to(".carousel-video", {
       scrollTrigger: {
-        trigger: "#video",
+        trigger: ".carousel-video",
         toggleActions: "restart none none none",
       },
       onComplete: () => {
@@ -49,71 +49,56 @@ const VideoCarousel = () => {
   }, [isEnd, videoId]);
 
   useEffect(() => {
-    let currentProgress = 0;
-    let span = videoSpanRef.current;
+    if (!startPlay) return;
 
-    if (span[videoId]) {
-      // animation to move the indicator
-      let anim = gsap.to(span[videoId], {
-        onUpdate: () => {
-          // get the progress of the video
-          const progress = Math.ceil(anim.progress() * 100);
+    const spanEl = videoSpanRef.current[videoId];
+    const dotEl = videoDivRef.current[videoId];
+    const videoEl = videoRef.current[videoId];
 
-          if (progress != currentProgress) {
-            currentProgress = progress;
+    if (!spanEl || !dotEl || !videoEl) return;
 
-            // set the width of the progress bar
-            gsap.to(videoDivRef.current[videoId], {
-              width:
-                window.innerWidth < 760
-                  ? "10vw" // mobile
-                  : window.innerWidth < 1200
-                  ? "10vw" // tablet
-                  : "4vw", // laptop
-            });
+    const indicatorWidth =
+      window.innerWidth < 760
+        ? "10vw"
+        : window.innerWidth < 1200
+        ? "10vw"
+        : "4vw";
 
-            // set the background color of the progress bar
-            gsap.to(span[videoId], {
-              width: `${currentProgress}%`,
-              backgroundColor: "white",
-            });
-          }
-        },
+    const duration =
+      hightlightsSlides[videoId]?.videoDuration || videoEl.duration || 1;
 
-        // when the video is ended, replace the progress bar with the indicator and change the background color
-        onComplete: () => {
-          if (isPlaying) {
-            gsap.to(videoDivRef.current[videoId], {
-              width: "12px",
-            });
-            gsap.to(span[videoId], {
-              backgroundColor: "#afafaf",
-            });
-          }
-        },
-      });
+    let hasCompletedAnimation = false;
 
-      if (videoId == 0) {
-        anim.restart();
+    const updateIndicator = () => {
+      const progress = (videoEl.currentTime / duration) * 100;
+      const safeProgress = Math.max(0, Math.min(progress, 100));
+
+      if (safeProgress >= 100) {
+        if (!hasCompletedAnimation) {
+          hasCompletedAnimation = true;
+          gsap.to(dotEl, { width: "12px" });
+          gsap.to(spanEl, { backgroundColor: "#afafaf" });
+        }
+        return;
       }
 
-      // update the progress bar
-      const animUpdate = () => {
-        anim.progress(
-          videoRef.current[videoId].currentTime /
-            hightlightsSlides[videoId].videoDuration
-        );
-      };
+      hasCompletedAnimation = false;
 
-      if (isPlaying) {
-        // ticker to update the progress bar
-        gsap.ticker.add(animUpdate);
-      } else {
-        // remove the ticker when the video is paused (progress bar is stopped)
-        gsap.ticker.remove(animUpdate);
-      }
+      gsap.set(dotEl, { width: indicatorWidth });
+      gsap.set(spanEl, { width: `${safeProgress}%`, backgroundColor: "white" });
+    };
+
+    // set initial state so the indicator reflects the current time immediately
+    updateIndicator();
+
+    if (isPlaying) {
+      gsap.ticker.add(updateIndicator);
     }
-  }, [videoId, startPlay]);
+
+    return () => {
+      gsap.ticker.remove(updateIndicator);
+    };
+  }, [videoId, startPlay, isPlaying]);
 
   useEffect(() => {
     if (loadedData.length > 3) {
@@ -133,11 +118,17 @@ const VideoCarousel = () => {
         break;
 
       case "video-last":
-        setVideo((pre) => ({ ...pre, isLastVideo: true }));
+        setVideo((pre) => ({ ...pre, isLastVideo: true, isPlaying: false }));
         break;
 
       case "video-reset":
-        setVideo((pre) => ({ ...pre, videoId: 0, isLastVideo: false }));
+        setVideo((pre) => ({
+          ...pre,
+          videoId: 0,
+          isLastVideo: false,
+          isEnd: false,
+          isPlaying: true,
+        }));
         break;
 
       case "pause":
@@ -153,21 +144,22 @@ const VideoCarousel = () => {
     }
   };
 
-  const handleLoadedMetaData = (i, e) => setLoadedData((pre) => [...pre, e]);
+  const handleLoadedMetaData = (i, e) => {
+    e.target.currentTime = 0;
+    setLoadedData((pre) => [...pre, e]);
+  };
 
   return (
     <>
       <div className="flex items-center">
         {hightlightsSlides.map((list, i) => (
-          <div key={list.id} id="slider" className="sm:pr-20 pr-10">
+          <div key={list.id} className="carousel-slider sm:pr-20 pr-10">
             <div className="video-carousel_container">
               <div className="w-full h-full flex-center rounded-3xl overflow-hidden bg-black">
+                <div className="absolute inset-0 opacity-80 bg-[linear-gradient(to_top,black_0%,black_10%,transparent_40%,transparent_100%)]"></div>
                 <video
-                  id="video"
                   playsInline={true}
-                  className={`${
-                    list.id === 2 && "translate-x-44"
-                  } pointer-events-none`}
+                  className={`carousel-video pointer-events-none`}
                   preload="auto"
                   muted
                   ref={(el) => (videoRef.current[i] = el)}
@@ -185,9 +177,9 @@ const VideoCarousel = () => {
                 </video>
               </div>
 
-              <div className="absolute top-12 left-[5%] z-10">
+              <div className="absolute left-8 bottom-8 z-20">
                 {list.textLists.map((text, i) => (
-                  <p key={i} className="md:text-2xl text-xl font-medium">
+                  <p key={i} className="md:text-3xl text-xl font-bold uppercase text-shadow-strong text-center text-gray-200">
                     {text}
                   </p>
                 ))}
